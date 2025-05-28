@@ -53,8 +53,7 @@ function isMobileDevice() {
 function createStars() {
     const starsContainer = document.createElement('div');
     starsContainer.className = 'stars-container';
-    const universeContainer = document.querySelector('.universe-container');
-    universeContainer.appendChild(starsContainer);
+    document.body.appendChild(starsContainer);
 
     const starCount = window.innerWidth < 768 ? 150 : 300;
     const starTypes = ['tiny', 'small', 'medium'];
@@ -64,11 +63,8 @@ function createStars() {
         const type = starTypes[Math.floor(Math.random() * starTypes.length)];
         star.className = `star ${type}`;
         
-        const x = Math.random() * 200 - 100;
-        const y = Math.random() * 200 - 100;
-        const z = Math.random() * 200 - 100;
-        
-        star.style.transform = `translate3d(${x}%, ${y}%, ${z}px)`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
         star.style.animationDelay = `${Math.random() * 5}s`;
         
         starsContainer.appendChild(star);
@@ -77,57 +73,63 @@ function createStars() {
     // Create meteor shower container
     const meteorShower = document.createElement('div');
     meteorShower.className = 'meteor-shower';
-    universeContainer.appendChild(meteorShower);
+    document.body.appendChild(meteorShower);
 
     // Start meteor shower
     startMeteorShower(meteorShower);
 }
 
-function createMeteor(container) {
-    const meteor = document.createElement('div');
-    meteor.className = 'meteor';
+function createMeteorGroup(container, count) {
+    const baseAngle = Math.random() * 15 + 30; // 30-45 degrees
+    const angleSpread = 10; // Độ phân tán giữa các sao trong nhóm
     
-    // Random starting position from top-left quadrant
-    const startX = Math.random() * (window.innerWidth * 0.5);
-    const startY = Math.random() * (window.innerHeight * 0.3);
-    
-    // Calculate end position for diagonal movement
-    const angle = Math.random() * 15 + 30; // 30-45 degrees
-    const distance = Math.max(window.innerWidth, window.innerHeight) * 1.5;
-    const endX = startX + (distance * Math.cos(angle * Math.PI / 180));
-    const endY = startY + (distance * Math.sin(angle * Math.PI / 180));
-    
-    // Set CSS variables for animation
-    meteor.style.setProperty('--startX', `${startX}px`);
-    meteor.style.setProperty('--startY', `${startY}px`);
-    meteor.style.setProperty('--endX', `${endX}px`);
-    meteor.style.setProperty('--endY', `${endY}px`);
-    meteor.style.setProperty('--angle', `${angle}deg`);
-    meteor.style.setProperty('--duration', `${Math.random() * 1 + 0.5}s`); // 0.5-1.5s
-    
-    container.appendChild(meteor);
-    
-    // Remove meteor after animation
-    meteor.addEventListener('animationend', () => {
-        if (container.contains(meteor)) {
-            container.removeChild(meteor);
-        }
-    });
+    for (let i = 0; i < count; i++) {
+        const meteor = document.createElement('div');
+        meteor.className = `meteor ${Math.random() > 0.7 ? 'large' : ''}`;
+        
+        // Random starting position from top-left quadrant with slight variation
+        const startX = Math.random() * (window.innerWidth * 0.5);
+        const startY = Math.random() * (window.innerHeight * 0.3);
+        
+        // Calculate angle for this meteor
+        const angle = baseAngle + (Math.random() * angleSpread - angleSpread/2);
+        const distance = Math.max(window.innerWidth, window.innerHeight) * 1.5;
+        const endX = startX + (distance * Math.cos(angle * Math.PI / 180));
+        const endY = startY + (distance * Math.sin(angle * Math.PI / 180));
+        
+        meteor.style.setProperty('--startX', `${startX}px`);
+        meteor.style.setProperty('--startY', `${startY}px`);
+        meteor.style.setProperty('--endX', `${endX}px`);
+        meteor.style.setProperty('--endY', `${endY}px`);
+        meteor.style.setProperty('--angle', `${angle}deg`);
+        meteor.style.setProperty('--duration', `${Math.random() * 1 + 0.8}s`); // 0.8-1.8s
+        
+        container.appendChild(meteor);
+        
+        meteor.addEventListener('animationend', () => {
+            if (container.contains(meteor)) {
+                container.removeChild(meteor);
+            }
+        });
+    }
 }
 
 function startMeteorShower(container) {
-    // Create initial batch of meteors
-    for (let i = 0; i < 5; i++) {
-        setTimeout(() => createMeteor(container), i * 100);
-    }
+    // Tạo nhóm sao băng ban đầu
+    createMeteorGroup(container, 7);
 
-    // Continuously create new meteors
+    // Tạo các nhóm sao băng mới
     setInterval(() => {
-        const meteorCount = Math.floor(Math.random() * 3) + 1; // 1-3 meteors at a time
-        for (let i = 0; i < meteorCount; i++) {
-            setTimeout(() => createMeteor(container), i * 100);
+        const meteorCount = Math.floor(Math.random() * 3) + 5; // 5-7 sao mỗi nhóm
+        createMeteorGroup(container, meteorCount);
+    }, 2000); // Nhóm mới mỗi 2 giây
+
+    // Thêm các sao băng đơn lẻ
+    setInterval(() => {
+        if (Math.random() > 0.5) { // 50% cơ hội tạo sao băng đơn
+            createMeteorGroup(container, 1);
         }
-    }, 2000); // New batch every 2 seconds
+    }, 500);
 }
 
 // Tạo hiệu ứng sao nền
@@ -266,10 +268,10 @@ function updateRotation() {
     rotationX += (targetRotationX - rotationX) * 0.1;
     rotationY += (targetRotationY - rotationY) * 0.1;
 
-    const container = document.querySelector('.universe-container');
-    if (container) {
-        container.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
-    }
+    const texts = document.querySelectorAll('.text-container');
+    texts.forEach(text => {
+        text.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) translateZ(0)`;
+    });
 
     requestAnimationFrame(updateRotation);
 }
@@ -291,19 +293,26 @@ function createGlowingText() {
     
     const text = getRandomText();
     const textElement = document.createElement('div');
-    textElement.setAttribute('class', 'falling-text neon-text');
+    
+    // Tạo kích thước ngẫu nhiên cho text
+    const sizes = ['tiny', 'small', 'medium', 'large'];
+    const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+    textElement.setAttribute('class', `falling-text neon-text text-${randomSize}`);
     textElement.textContent = text;
     
-    const startX = getRandomNumber(-window.innerWidth * 0.5, window.innerWidth * 0.5);
-    const startZ = getRandomNumber(-500, 500);
+    const startX = getRandomNumber(0, window.innerWidth * 0.95);
+    const zIndex = Math.floor(getRandomNumber(1, 10)); // Tạo độ sâu ngẫu nhiên
     
     textContainer.appendChild(textElement);
-    const universeContainer = document.querySelector('.universe-container');
-    universeContainer.appendChild(textContainer);
+    document.body.appendChild(textContainer);
 
-    textContainer.dataset.translateY = -100;
-    textContainer.style.transform = `translate3d(${startX}px, 0, ${startZ}px)`;
+    textContainer.style.left = `${startX}px`;
     textContainer.style.opacity = '1';
+    textContainer.style.zIndex = zIndex;
+
+    // Điều chỉnh độ mờ dựa trên zIndex để tạo cảm giác chiều sâu
+    const opacity = 0.4 + (zIndex / 10) * 0.6;
+    textElement.style.opacity = opacity;
 
     let startTime = performance.now();
     const duration = getRandomNumber(10000, 15000);
@@ -316,12 +325,14 @@ function createGlowingText() {
         const progress = Math.min(elapsed / duration, 1);
         
         const currentY = startY + (targetY - startY) * (progress * progress);
-        const currentTransform = textContainer.style.transform;
-        textContainer.style.transform = `${currentTransform.split('translateY')[0]} translateY(${currentY}px)`;
+        const currentTransform = textContainer.style.transform || '';
+        const rotationTransform = currentTransform.match(/rotate[XY]\([^)]+\)/g) || [];
+        const scale = 1 + (zIndex - 1) * 0.1; // Tăng kích thước dựa trên độ sâu
+        textContainer.style.transform = `${rotationTransform.join(' ')} translateY(${currentY}px) scale(${scale})`;
 
         if (currentY >= window.innerHeight) {
-            if (universeContainer.contains(textContainer)) {
-                universeContainer.removeChild(textContainer);
+            if (document.body.contains(textContainer)) {
+                document.body.removeChild(textContainer);
             }
             return;
         }
@@ -364,12 +375,11 @@ function mapRange(value, inMin, inMax, outMin, outMax) {
 }
 
 function startAnimation() {
-    const universeContainer = createUniverseContainer();
     createStars();
 
     // Thêm event listeners cho touch và mouse
-    universeContainer.addEventListener('mousedown', handleStart);
-    universeContainer.addEventListener('touchstart', handleStart);
+    document.addEventListener('mousedown', handleStart);
+    document.addEventListener('touchstart', handleStart);
     document.addEventListener('mousemove', handleMove);
     document.addEventListener('touchmove', handleMove, { passive: false });
     document.addEventListener('mouseup', handleEnd);
@@ -378,25 +388,20 @@ function startAnimation() {
     // Bắt đầu animation rotation
     updateRotation();
 
-    const isMobile = isMobileDevice();
+    const isMobile = window.innerWidth <= 768;
     const textInterval = isMobile ? 100 : 50;
 
-    // Tạo nhiều text ban đầu
-    for (let i = 0; i < 50; i++) {
-        setTimeout(() => createGlowingText(), i * 50);
+    // Tạo text ngay lập tức
+    for (let i = 0; i < 20; i++) {
+        createGlowingText();
     }
 
-    // Tiếp tục tạo text mới
+    // Tiếp tục tạo text mới với interval ngắn hơn
     setInterval(createGlowingText, textInterval);
-    setInterval(createHeart, isMobile ? 5000 : 4000);
 }
 
-// Khởi động animation
-window.addEventListener('load', () => {
-    windowHalfX = window.innerWidth / 2;
-    windowHalfY = window.innerHeight / 2;
-    startAnimation();
-});
+// Khởi động animation ngay khi DOM ready
+document.addEventListener('DOMContentLoaded', startAnimation);
 
 // Đơn giản hóa resize handler
 let resizeTimeout;
@@ -405,10 +410,12 @@ window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
     }
     resizeTimeout = setTimeout(() => {
-        const universeContainer = document.querySelector('.universe-container');
-        if (universeContainer) {
-            document.body.removeChild(universeContainer);
-        }
+        const elements = document.querySelectorAll('.text-container, .stars-container, .meteor-shower');
+        elements.forEach(el => {
+            if (document.body.contains(el)) {
+                document.body.removeChild(el);
+            }
+        });
         startAnimation();
     }, 250);
 });

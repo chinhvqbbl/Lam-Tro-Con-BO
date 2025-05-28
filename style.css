@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none;
 }
 
 body {
@@ -74,11 +75,11 @@ body {
 /* Shooting Stars */
 .shooting-star {
     position: absolute;
-    width: 2px;
-    height: 2px;
-    background: linear-gradient(45deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    width: 4px;
+    height: 4px;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.8));
     border-radius: 50%;
-    filter: drop-shadow(0 0 6px white);
+    filter: drop-shadow(0 0 10px white);
     animation: shoot 1s linear forwards;
     opacity: 1;
     will-change: transform;
@@ -89,10 +90,14 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 20px;
-    height: 2px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.8), 
+        rgba(255, 255, 255, 0.4),
+        transparent);
     transform-origin: left;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
 }
 
 @keyframes shoot {
@@ -117,24 +122,39 @@ body {
 
 .meteor {
     position: absolute;
-    width: 2px;
-    height: 2px;
+    width: 4px;
+    height: 4px;
     background: white;
     border-radius: 50%;
-    filter: drop-shadow(0 0 6px rgba(255,255,255,0.8));
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
     animation: meteor linear;
     animation-duration: var(--duration);
     transform-origin: top left;
     opacity: 0;
 }
 
+.meteor.large {
+    width: 6px;
+    height: 6px;
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.9));
+}
+
 .meteor::before {
     content: '';
     position: absolute;
-    width: 50px;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0.8), 
+        rgba(255,255,255,0.4),
+        transparent);
     transform: translateX(-100%);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.meteor.large::before {
+    width: 150px;
+    height: 3px;
 }
 
 @keyframes meteor {
@@ -166,11 +186,27 @@ body {
 
 .falling-text {
     font-family: Arial, sans-serif;
-    font-size: clamp(16px, 4vw, 24px);
     font-weight: bold;
     white-space: nowrap;
     pointer-events: none;
-    transform-style: preserve-3d;
+    transition: transform 0.3s ease-out;
+}
+
+/* Text sizes */
+.text-tiny {
+    font-size: clamp(12px, 2vw, 16px);
+}
+
+.text-small {
+    font-size: clamp(16px, 3vw, 24px);
+}
+
+.text-medium {
+    font-size: clamp(24px, 4vw, 32px);
+}
+
+.text-large {
+    font-size: clamp(32px, 5vw, 48px);
 }
 
 .neon-text {
@@ -179,6 +215,34 @@ body {
         0 0 7px rgba(255,255,255,0.7),
         0 0 14px rgba(230,167,255,0.6),
         0 0 21px rgba(230,167,255,0.4);
+    transition: text-shadow 0.3s ease;
+}
+
+/* Enhance neon effect based on size */
+.text-tiny.neon-text {
+    text-shadow: 
+        0 0 5px rgba(255,255,255,0.7),
+        0 0 10px rgba(230,167,255,0.5);
+}
+
+.text-small.neon-text {
+    text-shadow: 
+        0 0 7px rgba(255,255,255,0.7),
+        0 0 14px rgba(230,167,255,0.6);
+}
+
+.text-medium.neon-text {
+    text-shadow: 
+        0 0 10px rgba(255,255,255,0.8),
+        0 0 20px rgba(230,167,255,0.7),
+        0 0 30px rgba(230,167,255,0.5);
+}
+
+.text-large.neon-text {
+    text-shadow: 
+        0 0 15px rgba(255,255,255,0.9),
+        0 0 30px rgba(230,167,255,0.8),
+        0 0 45px rgba(230,167,255,0.6);
 }
 
 @keyframes fadeIn {
@@ -214,8 +278,20 @@ body {
         height: 1px;
     }
 
-    .falling-text {
-        font-size: clamp(14px, 3.5vw, 20px);
+    .text-tiny {
+        font-size: clamp(10px, 1.5vw, 14px);
+    }
+
+    .text-small {
+        font-size: clamp(14px, 2.5vw, 20px);
+    }
+
+    .text-medium {
+        font-size: clamp(20px, 3.5vw, 28px);
+    }
+
+    .text-large {
+        font-size: clamp(28px, 4.5vw, 40px);
     }
 
     .neon-text {
@@ -240,8 +316,20 @@ body {
         perspective: 600px;
     }
 
-    .falling-text {
-        font-size: clamp(12px, 3vw, 16px);
+    .text-tiny {
+        font-size: clamp(8px, 1.2vw, 12px);
+    }
+
+    .text-small {
+        font-size: clamp(12px, 2vw, 16px);
+    }
+
+    .text-medium {
+        font-size: clamp(16px, 3vw, 24px);
+    }
+
+    .text-large {
+        font-size: clamp(24px, 4vw, 32px);
     }
 
     .floating-heart {
