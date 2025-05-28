@@ -1,51 +1,68 @@
-# ❤️ Mã QR Trái Tim – Truy Cập Demo Ngay!
+# ❤️ Mã QR Trái Tim – Truy Cập Demo Nhanh!
 
 <p align="center">
-  <a href="https://github.com/chinhvqbbl/Lam-Tro-Con-BO/blob/main/qrcode_211881377_0b109e0cd59181e059e4517d03ec7133.png">
+  <a href="https://chinhvqbbl.github.io/Lam-Tro-Con-BO/">
     <img src="https://github.com/chinhvqbbl/Lam-Tro-Con-BO/blob/main/qrcode_211881377_0b109e0cd59181e059e4517d03ec7133.png?raw=true" alt="QR Demo" width="250" height="250"/>
   </a>
 </p>
 
-> 📱 Scan để xem hiệu ứng sao băng ngay trên điện thoại!
+> 📱 Scan QR để xem hiệu ứng sao băng trực tiếp trên điện thoại!
 
 ---
 
-# ✨ Hiệu Ứng Sao Băng – Sức Mạnh Của AI Trong 2 Tiếng!
-
-Một animation web cực kỳ đẹp mắt được **AI hỗ trợ tạo ra chỉ trong 2 giờ** – hiệu ứng chữ rơi, sao băng, xoay 3D và nền sao lấp lánh. Tất cả là nhờ **sức mạnh sáng tạo của Claude AI 💖** cùng sự tinh chỉnh từ dev.
+# ✨ Hiệu Ứng Sao Băng – Kết Hợp Sức Mạnh Của AI & Frontend
 
 ---
 
-## 🚀 Demo Trực Tiếp
+## 1️⃣ Tải Về Dự Án
 
-🔗 [Xem ngay tại đây](https://chinhvqbbl.github.io/Lam-Tro-Con-BO/)
+**Clone GitHub:**
 
----
+```bash
+git clone https://github.com/chinhvqbbl/Lam-Tro-Con-BO.git
+```
 
-## 🔥 Tính Năng Nổi Bật
-
-* ✨ Hiệu ứng chữ rơi neon sống động
-* 🌠 Animation sao băng mượt mà
-* 🌌 Tương tác xoay 3D theo chuột/chạm
-* ⭐ Nền sao lấp lánh như vũ trụ
-* 📱 Tối ưu hóa cho cả điện thoại di động
+**Hoặc tải file ZIP:**
+[https://github.com/chinhvqbbl/Lam-Tro-Con-BO/archive/refs/heads/main.zip](https://github.com/chinhvqbbl/Lam-Tro-Con-BO/archive/refs/heads/main.zip)
 
 ---
 
-## 💖 Tạo QR Code Hình Trái Tim
+## 2️⃣ Deploy Website
 
-Bạn có thể tạo QR trái tim để chia sẻ trang như sau:
+### ✅ Với GitHub Pages
+
+1. Vào repo → **Settings** → **Pages**
+2. Source: chọn `main` + `/ (root)`
+3. Nhấn **Save**
+4. Link web sẽ là:
+   `https://<username>.github.io/<repository>/`
+
+### ✅ Với Vercel
+
+1. Truy cập [https://vercel.com](https://vercel.com)
+2. Đăng nhập GitHub → **Add New Project**
+3. Chọn repo `Lam-Tro-Con-BO` → nhấn **Deploy**
+4. Link web sẽ là:
+   `https://<project>.vercel.app`
+
+---
+
+## 3️⃣ Tạo QR Code Hình Trái Tim
+
+Tạo mã QR đẹp để chia sẻ link:
 
 1. Truy cập: [https://me-qr.com/qr-code-generator/link](https://me-qr.com/qr-code-generator/link)
-2. Nhập đường dẫn web bạn muốn gắn QR
-3. Trong phần **Style**, chọn hình trái tim ❤️
-4. Tải ảnh về và dùng cho in ấn hoặc chia sẻ mạng xã hội
+2. Nhập link website bạn đã deploy
+3. Chọn **Style: hình trái tim ❤️**
+4. Tải ảnh về và chia sẻ hoặc in ấn
+
+📌 Ví dụ QR trái tim ở đầu trang này!
 
 ---
 
-## ✏️ Tùy Chỉnh Nội Dung
+## 4️⃣ Tuỳ Chỉnh Nội Dung
 
-Chỉnh sửa các dòng chữ rơi trong `script.js`:
+Trong file `script.js`, chỉnh mảng:
 
 ```js
 const loveTexts = [
@@ -57,24 +74,29 @@ const loveTexts = [
 
 ---
 
-## ⚙️ Hướng Dẫn Deploy
+## 5️⃣ Xem Demo Trực Tiếp
 
-### GitHub Pages
+🔗 Link chạy thử:
+[https://chinhvqbbl.github.io/Lam-Tro-Con-BO/](https://chinhvqbbl.github.io/Lam-Tro-Con-BO/)
 
-1. Settings → Pages → Source: `main` + `/ (root)`
-2. Save → Sau 1-2 phút, truy cập:
-   `https://<username>.github.io/<repository>/`
+---
 
-### Vercel
+## 🤖 Dự Án Được Tạo Bởi AI
 
-1. Vào [vercel.com](https://vercel.com)
-2. Login GitHub → Add New Project → Chọn repo → Deploy
+Toàn bộ animation được **Claude AI hỗ trợ xây dựng trong 2 tiếng**:
+
+* Tạo hiệu ứng chữ rơi + neon
+* Animation sao băng
+* Xoay không gian 3D
+* Hiệu ứng nền tương tác
+
+AI không chỉ giúp bạn code – mà còn truyền cảm hứng sáng tạo và tiết kiệm thời gian cực mạnh!
 
 ---
 
 ## 📄 Giấy Phép
 
-Tự do sử dụng và chỉnh sửa cho dự án cá nhân. Nhớ ghi nguồn nếu bạn thấy dự án hữu ích! ❤️
+Bạn được **tự do dùng và chỉnh sửa** cho mục đích cá nhân, phi thương mại. Nhớ ghi nguồn nếu bạn thấy dự án hữu ích! 💖
 
 ---
 
