@@ -36,6 +36,13 @@ const INERTIA_THRESHOLD = 0.01;
 let lastUpdateTime = 0;
 const UPDATE_INTERVAL = 1000 / 30; // 30fps cho hiệu ứng 3D
 
+// Thêm biến để quản lý số lượng phần tử tối đa
+const isMobile = window.innerWidth <= 768;
+const MAX_TEXTS = isMobile ? 50 : 200;
+const MAX_STARS = isMobile ? 100 : 300;
+const TEXT_INTERVAL = isMobile ? 200 : 50; // Tăng interval trên mobile
+const CLEANUP_INTERVAL = 1000; // Dọn dẹp mỗi giây
+
 function getRandomText() {
     return loveTexts[Math.floor(Math.random() * loveTexts.length)];
 }
@@ -55,8 +62,8 @@ function createStars() {
     starsContainer.className = 'stars-container';
     document.body.appendChild(starsContainer);
 
-    const starCount = window.innerWidth < 768 ? 150 : 300;
-    const starTypes = ['tiny', 'small', 'medium'];
+    const starCount = MAX_STARS;
+    const starTypes = isMobile ? ['tiny', 'small'] : ['tiny', 'small', 'medium'];
     
     for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -80,18 +87,19 @@ function createStars() {
 }
 
 function createMeteorGroup(container, count) {
-    const baseAngle = Math.random() * 15 + 30; // 30-45 degrees
-    const angleSpread = 10; // Độ phân tán giữa các sao trong nhóm
+    // Giảm số lượng sao băng trên mobile
+    const actualCount = isMobile ? Math.min(count, 3) : count;
+    const baseAngle = Math.random() * 15 + 30;
+    const angleSpread = isMobile ? 5 : 10; // Giảm độ phân tán trên mobile
     
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < actualCount; i++) {
         const meteor = document.createElement('div');
-        meteor.className = `meteor ${Math.random() > 0.7 ? 'large' : ''}`;
+        // Giảm tỷ lệ sao lớn trên mobile
+        meteor.className = `meteor ${(!isMobile && Math.random() > 0.8) ? 'large' : ''}`;
         
-        // Random starting position from top-left quadrant with slight variation
         const startX = Math.random() * (window.innerWidth * 0.5);
         const startY = Math.random() * (window.innerHeight * 0.3);
         
-        // Calculate angle for this meteor
         const angle = baseAngle + (Math.random() * angleSpread - angleSpread/2);
         const distance = Math.max(window.innerWidth, window.innerHeight) * 1.5;
         const endX = startX + (distance * Math.cos(angle * Math.PI / 180));
@@ -102,10 +110,12 @@ function createMeteorGroup(container, count) {
         meteor.style.setProperty('--endX', `${endX}px`);
         meteor.style.setProperty('--endY', `${endY}px`);
         meteor.style.setProperty('--angle', `${angle}deg`);
-        meteor.style.setProperty('--duration', `${Math.random() * 1 + 0.8}s`); // 0.8-1.8s
+        // Giảm thời gian animation trên mobile
+        meteor.style.setProperty('--duration', `${isMobile ? 0.6 + Math.random() * 0.4 : Math.random() * 1 + 0.8}s`);
         
         container.appendChild(meteor);
         
+        // Đảm bảo cleanup sau khi animation kết thúc
         meteor.addEventListener('animationend', () => {
             if (container.contains(meteor)) {
                 container.removeChild(meteor);
@@ -115,21 +125,25 @@ function createMeteorGroup(container, count) {
 }
 
 function startMeteorShower(container) {
-    // Tạo nhóm sao băng ban đầu
-    createMeteorGroup(container, 7);
+    // Giảm số lượng sao băng ban đầu trên mobile
+    createMeteorGroup(container, isMobile ? 3 : 7);
 
-    // Tạo các nhóm sao băng mới
+    // Điều chỉnh tần suất tạo sao băng
     setInterval(() => {
-        const meteorCount = Math.floor(Math.random() * 3) + 5; // 5-7 sao mỗi nhóm
+        const meteorCount = isMobile ? 
+            Math.floor(Math.random() * 2) + 2 : // 2-3 sao trên mobile
+            Math.floor(Math.random() * 3) + 5; // 5-7 sao trên desktop
         createMeteorGroup(container, meteorCount);
-    }, 2000); // Nhóm mới mỗi 2 giây
+    }, isMobile ? 3000 : 2000); // Giảm tần suất trên mobile
 
-    // Thêm các sao băng đơn lẻ
-    setInterval(() => {
-        if (Math.random() > 0.5) { // 50% cơ hội tạo sao băng đơn
-            createMeteorGroup(container, 1);
-        }
-    }, 500);
+    // Giảm tần suất sao băng đơn lẻ trên mobile
+    if (!isMobile) {
+        setInterval(() => {
+            if (Math.random() > 0.5) {
+                createMeteorGroup(container, 1);
+            }
+        }, 500);
+    }
 }
 
 // Tạo hiệu ứng sao nền
@@ -139,7 +153,7 @@ function createStarryBackground() {
     document.body.appendChild(starsContainer);
 
     // Tạo các ngôi sao nền
-    const starCount = isMobileDevice() ? 100 : 200;
+    const starCount = isMobile ? 100 : 200;
     for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
         star.className = 'star-background';
@@ -284,9 +298,8 @@ function createUniverseContainer() {
 }
 
 function createGlowingText() {
-    const maxTexts = 200;
     const currentTexts = document.querySelectorAll('.text-container').length;
-    if (currentTexts >= maxTexts) return;
+    if (currentTexts >= MAX_TEXTS) return;
 
     const textContainer = document.createElement('div');
     textContainer.setAttribute('class', 'text-container');
@@ -294,14 +307,14 @@ function createGlowingText() {
     const text = getRandomText();
     const textElement = document.createElement('div');
     
-    // Tạo kích thước ngẫu nhiên cho text
-    const sizes = ['tiny', 'small', 'medium', 'large'];
+    // Giảm số lượng size trên mobile
+    const sizes = isMobile ? ['small', 'medium'] : ['tiny', 'small', 'medium', 'large'];
     const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
     textElement.setAttribute('class', `falling-text neon-text text-${randomSize}`);
     textElement.textContent = text;
     
     const startX = getRandomNumber(0, window.innerWidth * 0.95);
-    const zIndex = Math.floor(getRandomNumber(1, 10)); // Tạo độ sâu ngẫu nhiên
+    const zIndex = Math.floor(getRandomNumber(1, 5)); // Giảm số layer
     
     textContainer.appendChild(textElement);
     document.body.appendChild(textContainer);
@@ -310,12 +323,13 @@ function createGlowingText() {
     textContainer.style.opacity = '1';
     textContainer.style.zIndex = zIndex;
 
-    // Điều chỉnh độ mờ dựa trên zIndex để tạo cảm giác chiều sâu
-    const opacity = 0.4 + (zIndex / 10) * 0.6;
+    const opacity = 0.5 + (zIndex / 5) * 0.5; // Giảm range opacity
     textElement.style.opacity = opacity;
 
     let startTime = performance.now();
-    const duration = getRandomNumber(10000, 15000);
+    const duration = isMobile ? 
+        getRandomNumber(8000, 12000) : // Giảm thời gian rơi trên mobile
+        getRandomNumber(10000, 15000);
     const startY = -100;
     const targetY = window.innerHeight + 50;
 
@@ -327,7 +341,7 @@ function createGlowingText() {
         const currentY = startY + (targetY - startY) * (progress * progress);
         const currentTransform = textContainer.style.transform || '';
         const rotationTransform = currentTransform.match(/rotate[XY]\([^)]+\)/g) || [];
-        const scale = 1 + (zIndex - 1) * 0.1; // Tăng kích thước dựa trên độ sâu
+        const scale = 1 + (zIndex - 1) * 0.05; // Giảm độ scale
         textContainer.style.transform = `${rotationTransform.join(' ')} translateY(${currentY}px) scale(${scale})`;
 
         if (currentY >= window.innerHeight) {
@@ -388,19 +402,17 @@ function startAnimation() {
     // Bắt đầu animation rotation
     updateRotation();
 
-    const isMobile = window.innerWidth <= 768;
-    const textInterval = isMobile ? 100 : 50;
-
-    // Tạo text ngay lập tức
-    for (let i = 0; i < 20; i++) {
-        createGlowingText();
+    // Tạo ít text hơn ban đầu trên mobile
+    const initialTexts = isMobile ? 10 : 20;
+    for (let i = 0; i < initialTexts; i++) {
+        setTimeout(() => createGlowingText(), i * TEXT_INTERVAL);
     }
 
-    // Tiếp tục tạo text mới với interval ngắn hơn
-    setInterval(createGlowingText, textInterval);
+    setInterval(createGlowingText, TEXT_INTERVAL);
+    setInterval(cleanup, CLEANUP_INTERVAL);
 }
 
-// Khởi động animation ngay khi DOM ready
+// Khởi động animation khi DOM ready
 document.addEventListener('DOMContentLoaded', startAnimation);
 
 // Đơn giản hóa resize handler
@@ -423,3 +435,20 @@ window.addEventListener('resize', () => {
 // Loại bỏ các event listener không cần thiết và animation update
 window.removeEventListener('mousemove', onMouseMove);
 window.removeEventListener('touchmove', onTouchMove);
+
+// Thêm hàm dọn dẹp
+function cleanup() {
+    const elements = document.querySelectorAll('.text-container');
+    elements.forEach(el => {
+        const transform = el.style.transform || '';
+        if (transform.includes('translateY')) {
+            const match = transform.match(/translateY\(([^)]+)\)/);
+            if (match) {
+                const y = parseFloat(match[1]);
+                if (y >= window.innerHeight) {
+                    el.remove();
+                }
+            }
+        }
+    });
+}
